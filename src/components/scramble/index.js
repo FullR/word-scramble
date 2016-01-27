@@ -10,6 +10,7 @@ import CheckAnswerModal from "./check-answer-modal";
 import LetterGroups from "./letter-groups";
 import SentenceHint from "./sentence-hint";
 import Button from "components/button";
+import Arrow from "components/arrow";
 
 const style = {
   base: {
@@ -234,7 +235,7 @@ export default class Scramble extends React.Component {
         <Button style={style.homeButton} onClick={this.props.onBack}>Home</Button>
         <div style={style.bottomRightBox}>
           <Button style={style.checkButton} onClick={this.checkAnswer.bind(this)} disabled={!this.canCheckAnswer()}>Check Answer</Button>
-          <Button style={style.skipButton} onClick={this.props.onSkip}>Skip</Button>
+          <Arrow style={style.skipButton} onClick={this.props.onSkip}>Skip</Arrow>
         </div>
         {this.renderModals()}
       </Block>

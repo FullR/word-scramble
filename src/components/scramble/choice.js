@@ -13,7 +13,8 @@ const style = {
     margin: "0 10px 0 10px",
     padding: 10,
     border: "2px solid #ddd",
-    borderRadius: 8
+    borderRadius: 8,
+    cursor: "pointer"
   },
   filled: {
     border: "2px solid #444",
