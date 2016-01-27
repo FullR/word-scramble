@@ -1,0 +1,9 @@
+node_modules
+dist
+builds
+.DS_Store
+audio
+npm-debug.log
+documents
+.~*
+
