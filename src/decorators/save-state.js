@@ -1,25 +1,43 @@
 import React from "react";
 import storage from "storage";
 
-export default function saveState({namespace, keys}={}) {
+function serialize(obj={}, keys) {
+  if(keys) {
+    return keys.reduce((data, key) => {
+      data[key] = obj[key];
+      return data;
+    }, {});
+  } else {
+    return obj;
+  }
+}
+
+export default function saveState({namespace, keys, store}={}) {
   return (Parent) => class SaveState extends Parent {
+    _getStore() {
+      const s = store || this.store || this.props.store;
+      if(!s) throw new Error("store option is required in saveState decorator");
+      return s;
+    }
+
     _getNamespace() {
       const ns = namespace || this.namespace || this.props.namespace;
-      if(!ns) throw new Error("saveState requires a namespace");
+      if(!ns) throw new Error("namespace option is required in saveState decorator");
       return ns;
     }
 
     save() {
-      const data = keys ? keys.reduce((data, key) => {
-        data[key] = this.state[key];
-        return data;
-      }, {}) : (this.state || {});
-      storage.set(this._getNamespace(), data);
-      return data;
+      this._getStore().set(this._getNamespace(), serialize(this.state, keys))
     }
 
     load(defaultData={}) {
-      return Object.assign({}, defaultData, storage.get(this._getNamespace())) || defaultData;
+      const loaded = this._getStore().get(this._getNamespace());
+      if(loaded) {
+        return Object.assign({}, defaultData, loaded);
+      } else {
+        this._getStore().set(this._getNamespace(), defaultData);
+        return defaultData;
+      }
     }
 
     componentDidUpdate(prevProps, prevState) {

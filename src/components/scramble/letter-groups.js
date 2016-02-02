@@ -1,7 +1,9 @@
 import React from "react";
-import Belt from "components/belt";
+import radium from "radium";
 import {DragDropContext} from "react-dnd";
 import dndBackend from "dnd-backend";
+import Block from "components/block";
+import Belt from "components/belt";
 import Choice from "./choice";
 
 function swapAt(arrA, arrB, aIndex, bIndex) {
@@ -22,19 +24,41 @@ function swapIndexes(arr, a, b) {
   return clone;
 }
 
+const rowStyle = {
+  position: "absolute",
+  width: "100%",
+  textAlign: "center"
+};
 const style = {
-  base: {width: "100%", height: "100%"},
-  row: {
+  base: {
     width: "100%",
-    textAlign: "center"
+    boxSizing: "border-box"
+  },
+  top: {
+    ...rowStyle,
+    top: 20
+  },
+  bottom: {
+    ...rowStyle,
+    bottom: 20
   }
 };
 
 @DragDropContext(dndBackend)
+@radium
 export default class LetterGroups extends React.Component {
   static defaultProps = {
     rowSpacing: 100
   };
+
+  getChoiceSize() {
+    const {unselected} = this.props;
+    if(unselected.length >= 12) {
+      return {width: 75, height: 90};
+    } else {
+      return {width: 100, height: 120};
+    }
+  }
 
   onChange(unselected, selected) {
     const {onChange} = this.props;
@@ -100,12 +124,15 @@ export default class LetterGroups extends React.Component {
   }
 
   render() {
-    const {unselected, selected, unselectedHintIndex, selectedHintIndex, rowSpacing, children} = this.props;
-    const bottomRowStyle = {marginTop: rowSpacing};
+    const {unselected, selected, unselectedHintIndex, selectedHintIndex, rowSpacing, disabled, children} = this.props;
+    const {width, height} = this.getChoiceSize();
+    const dynamicStyle = {
+      height: this.props.height
+    };
 
     return (
-      <div style={style.base}>
-        <div style={style.row}>
+      <Block style={[style.base, dynamicStyle]}>
+        <div style={style.top}>
           {selected.map((choice, i) =>
             <Choice
               key={`selected-${i}`}
@@ -114,10 +141,13 @@ export default class LetterGroups extends React.Component {
               highlighted={i === selectedHintIndex}
               index={i}
               onDrop={this.onDrop.bind(this, choice)}
+              disabled={disabled}
+              width={width}
+              height={height}
             />
           )}
         </div>
-        <div style={{...style.row, ...bottomRowStyle}}>
+        <div style={style.bottom}>
           {unselected.map((choice, i) =>
             <Choice
               key={`unselected-${i}`}
@@ -126,11 +156,14 @@ export default class LetterGroups extends React.Component {
               highlighted={i === unselectedHintIndex}
               index={i}
               onDrop={this.onDrop.bind(this, choice)}
+              disabled={disabled}
+              width={width}
+              height={height}
             />
           )}
         </div>
         {children}
-      </div>
+      </Block>
     );
   }
 }

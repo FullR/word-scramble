@@ -1,10 +1,12 @@
 import React from "react";
+import storage from "storage";
+import saveState from "decorators/save-state";
 import Button from "components/button";
 import Center from "components/center";
-import UserListItem from "./user-list-item";
-import saveState from "decorators/save-state";
-import RemoveUserModal from "./remove-user-modal";
 import AlertModal from "components/alert-modal";
+import RemoveUserModal from "./remove-user-modal";
+import NewUserForm from "./new-user-form";
+import UserList from "./user-list";
 
 const style = {
   base: {
@@ -27,30 +29,6 @@ const style = {
     overflowX: "hidden"
   },
 
-  formBox: {
-    height: 50,
-    paddingBottom: 20,
-    width: "100%",
-    overflow: "visible",
-    whiteSpace: "nowrap"
-  },
-
-  input: {
-    width: 427,
-    height: 45,
-    fontSize: 25,
-    marginRight: 20
-  },
-
-  userList: {
-    padding: 0,
-    fontSize: 25,
-    margin: 0,
-    overflow: "auto",
-    height: 600,
-    border: "2px solid #DDD"
-  },
-
   loginButton: {
     position: "absolute",
     bottom: 75,
@@ -58,7 +36,7 @@ const style = {
   }
 };
 
-@saveState({namespace: "login", keys: ["users", "selectedUserId", "idCounter"]})
+@saveState({namespace: "login", keys: ["users", "selectedUserId", "idCounter"], store: storage})
 export default class Login extends React.Component {
   constructor(props) {
     super(props);
@@ -74,10 +52,6 @@ export default class Login extends React.Component {
 
   get currentUser() {
     return this.getUserById(this.state.selectedUserId);
-  }
-
-  componentDidMount() {
-    this.refs.nameInput.focus();
   }
 
   getUserById(id) {
@@ -120,20 +94,24 @@ export default class Login extends React.Component {
   }
 
   removeUser(id) {
+    const {onRemoveUser} = this.props;
     const {users, selectedUserId} = this.state;
     this.setState({
       users: users.filter((user) => user.id !== id),
       selectedUserId: selectedUserId === id ? null : selectedUserId,
       userIdToRemove: null
     });
+    if(onRemoveUser) {
+      onRemoveUser(id);
+    }
   }
 
-  login() {
+  submit() {
     const {users, selectedUserId} = this.state;
-    const {onLogin} = this.props;
+    const {onSubmit} = this.props;
     const {currentUser} = this;
-    if(onLogin && currentUser) {
-      onLogin(currentUser);
+    if(onSubmit && currentUser) {
+      onSubmit(currentUser);
     }
   }
 
@@ -181,33 +159,22 @@ export default class Login extends React.Component {
       <div style={style.base}>
         <div style={style.header}>Create or Select a user</div>
         <Center style={style.usersBox}>
-          <div style={style.formBox}>
-            <form onSubmit={this.createUser.bind(this)}>
-              <input
-                ref="nameInput"
-                style={style.input}
-                value={userNameText}
-                onChange={this.updateUserNameText.bind(this)}
-                placeholder="Name"
-              />
-              <Button>Create</Button>
-            </form>
-          </div>
-          <ul style={style.userList}>
-            {users.map(({id, name}) =>
-              <UserListItem
-                key={id}
-                selected={id === selectedUserId}
-                onClick={this.selectUser.bind(this, id)}
-                onRemoveClick={this.confirmRemoveUser.bind(this, id)}
-              >
-                {name}
-              </UserListItem>
-            )}
-          </ul>
+          <NewUserForm
+            value={userNameText}
+            onChange={this.updateUserNameText.bind(this)}
+            onSubmit={this.createUser.bind(this)}
+            autofocus
+          />
+          <UserList
+            users={users}
+            selectedId={selectedUserId}
+            onSelectUser={this.selectUser.bind(this)}
+            onRemoveUser={this.confirmRemoveUser.bind(this)}
+          />
         </Center>
 
-        <Button onClick={this.login.bind(this)} style={style.loginButton} disabled={!selectedUserId} color="green">Login</Button>
+        <Button onClick={this.submit.bind(this)} style={style.loginButton} disabled={!selectedUserId} color="green">Login</Button>
+
         {this.renderModals()}
       </div>
     );

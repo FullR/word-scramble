@@ -1,14 +1,20 @@
 import React from "react";
+import {throttle} from "lodash";
+import getWindowDims from "util/get-window-dims";
+
+function getState() {
+  return {window: getWindowDims()};
+}
 
 export default (Wrapped) => class WindowListener extends React.Component {
   constructor(props) {
     super(props);
-    this.onResize = this.onResize.bind(this);
-    this.state = {width: window.innerWidth, height: window.innerHeight};
+    this.onResize = throttle(this.onResize.bind(this), 100, {leading: true, trailing: true});
+    this.state = getState();
   }
 
   onResize() {
-    this.setState({width: window.innerWidth, height: window.innerHeight});
+    this.setState(getState());
   }
 
   componentDidMount() {

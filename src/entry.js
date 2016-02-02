@@ -11,7 +11,6 @@ function fatalError(error) {
 
 try {
   onReady().subscribe(() => {
-    console.log("deviceready fired");
     require("./app");
   }, fatalError);
 } catch(error) {

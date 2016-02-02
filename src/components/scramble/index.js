@@ -2,7 +2,8 @@ import React from "react";
 import shuffle from "lodash/shuffle";
 import sample from "lodash/sample";
 import isNumber from "lodash/isNumber";
-import persists from "decorators/persists";
+import saveState from "decorators/save-state";
+import windowListener from "decorators/window-listener";
 import Block from "components/block";
 import Relative from "components/relative";
 import Center from "components/center";
@@ -12,66 +13,69 @@ import SentenceHint from "./sentence-hint";
 import Button from "components/button";
 import Arrow from "components/arrow";
 
+
 const style = {
   base: {
+    background: "#fff",
+    width: "100%",
+    height: "100%"
+  },
+  top: {
+    width: "100%",
     background: "#8cefff",
-    width: "100%",
-    height: "100%"
-  },
-  content: {
-    width: "100%",
-    height: "100%"
-  },
-  header: {
-    width: "100%",
-    height: 50
-  },
-  main: {
-    width: "100%",
-    background: "#FFF",
-    padding: 20
-  },
-  footer: {
-    padding: 20
+    borderBottom: "2px solid #444"
   },
   sentenceHint: {
     position: "relative",
     top: 10,
     marginLeft: 20,
     fontSize: 22,
-    height: 50
-  },
-  definitionBox: {
-    marginTop: 20,
-    width: "100%",
     height: 50,
-    fontSize: 24,
+    left: 20
+  },
+  definition: {
+    width: "100%",
     textAlign: "center",
-    background: "#FFF"
+    fontSize: 24,
+    padding: 20
+  },
+  footer: {
+    padding: 20,
+    width: "100%"
   },
   letterHintButton: {
     marginRight: 10
   },
   skipButton: {
-    display: "block"
+    position: "relative",
+    top: -22,
+    verticalAlign: "top",
+    marginLeft: 10
   },
   checkButton: {
-    display: "block",
-    marginBottom: 20
+    verticalAlign: "top"
   },
   homeButton: {
     position: "absolute",
+    color: "#00F",
     left: 20,
-    bottom: 20
+    bottom: 20,
+    fontSize: 30,
+    cursor: "pointer",
+    textDecoration: "underline",
+    ":hover": {
+      color: "#005"
+    }
   },
   bottomRightBox: {
     position: "absolute",
-    right: 20,
-    bottom: 20
+    right: 0,
+    top: 0
   }
 };
 
-@persists()
+@windowListener
+@saveState()
 export default class Scramble extends React.Component {
   static defaultProps = {
     sentenceHintValue: 1
@@ -79,9 +83,12 @@ export default class Scramble extends React.Component {
 
   constructor(props) {
     super(props);
-    const letters = props.word.split("");
+    const letters = this.letters = props.word.split("");
+
     this.state = this.load({
       started: true,
+      complete: false,
+      showingCorrect: false,
       unselected: shuffle(letters.map((letter) => ({value: letter}))),
       selected: letters.map(() => ({value: null})),
       showingSentenceHint: false,
@@ -115,8 +122,25 @@ export default class Scramble extends React.Component {
     return letterHintsUsed.length + (showingSentenceHint ? sentenceHintValue : 0);
   }
 
+  get scorePercent() {
+    return (this.score / this.maxScore) * 100;
+  }
+
   canCheckAnswer() {
-    return this.state.selected.every(({value}) => value !== null);
+    const {complete, selected} = this.state;
+    return !complete && selected.every(({value}) => value !== null);
+  }
+
+  canUseLetterHint() {
+    const {complete, letterHintsUsed} = this.state;
+    const {maxLetterHints} = this;
+
+    return !complete && letterHintsUsed.length < maxLetterHints;
+  }
+
+  canUseSentenceHint() {
+    const {complete, showingSentenceHint} = this.state;
+    return !complete && !showingSentenceHint;
   }
 
   isCorrect() {
@@ -125,7 +149,10 @@ export default class Scramble extends React.Component {
   }
 
   checkAnswer() {
-    this.setState({checkingAnswer: true});
+    this.setState({
+      checkingAnswer: true,
+      complete: this.isCorrect()
+    });
   }
 
   closeModals() {
@@ -178,65 +205,78 @@ export default class Scramble extends React.Component {
     });
   }
 
+  showCorrectAnswer() {
+    this.setState({
+      complete: true,
+      showingCorrect: true
+    });
+    this.closeModals();
+  }
+
   renderModals() {
     const {checkingAnswer} = this.state;
     const {onSkip, onBack} = this.props;
     if(!checkingAnswer) return;
     const isCorrect = this.isCorrect();
+    const close = this.closeModals.bind(this);
 
     return (
       <CheckAnswerModal
+        score={this.scorePercent}
         correct={isCorrect}
-        onMenuClick={onBack}
+        onClose={close}
         onNextClick={onSkip}
-        onOverlayClick={this.isCorrect() ? null : this.closeModals.bind(this)}
+        onShowClick={this.showCorrectAnswer.bind(this)}
+        onOverlayClick={this.isCorrect() ? null : close}
       />
     );
   }
 
   render() {
-    const {selected, unselected, showingSentenceHint, selectedHintIndex, unselectedHintIndex, letterHintsUsed} = this.state;
-    const {sentence, definition} = this.props;
+    const {selected, unselected, showingSentenceHint, selectedHintIndex, unselectedHintIndex, letterHintsUsed, showingCorrect, complete} = this.state;
+    const {sentence, definition, window} = this.props;
     const {maxLetterHints} = this;
+    const letterGroupProps = showingCorrect ? {
+      selected: this.letters.map((letter) => ({value: letter})),
+      unselected: this.letters.map(() => ({value: null})),
+      disabled: true
+    } : {
+      selected: selected,
+      unselected: unselected,
+      onChange: this.onChange.bind(this),
+      unselectedHintIndex: unselectedHintIndex,
+      selectedHintIndex: selectedHintIndex
+    };
 
     return (
       <Block style={style.base}>
-        <Block style={style.header}>
-
-        </Block>
-        <Block style={style.main}>
-          <LetterGroups
-            rowSpacing={300}
-            selected={selected}
-            unselected={unselected}
-            onChange={this.onChange.bind(this)}
-            unselectedHintIndex={unselectedHintIndex}
-            selectedHintIndex={selectedHintIndex}
-          >
-            <Block style={style.definitionBox}>
-              <Center>
-                Definition:<br/>
-                {definition}
-              </Center>
-            </Block>
-          </LetterGroups>
+        <Block style={style.top}>
+          <LetterGroups {...letterGroupProps} height={window.height - 280}/>
+          <Block style={style.definition}>
+              Definition:<br/>
+              {definition}
+          </Block>
         </Block>
 
         <Block style={style.footer}>
-          <Button style={style.letterHintButton} onClick={this.showLetterHint.bind(this)} disabled={letterHintsUsed.length >= maxLetterHints}>
-            Letter Hint<br/>({maxLetterHints - letterHintsUsed.length}/{maxLetterHints})
+          <Button style={style.letterHintButton} onClick={this.showLetterHint.bind(this)} disabled={!this.canUseLetterHint()}>
+            Letter Hint
+            {letterHintsUsed.length ?
+              [<br/>, `${maxLetterHints - letterHintsUsed.length} left`] :
+              null
+            }
           </Button>
-          <Button onClick={this.showSentenceHint.bind(this)} disabled={showingSentenceHint}>Sentence<br/>Hint</Button>
-          <Relative left={20}>
-            <SentenceHint style={style.sentenceHint} hidden={!showingSentenceHint}>{sentence}</SentenceHint>
-          </Relative>
+
+          <Button onClick={this.showSentenceHint.bind(this)} disabled={!this.canUseSentenceHint()}>Sentence<br/>Hint</Button>
+          <SentenceHint style={style.sentenceHint} hidden={!showingSentenceHint}>{sentence}</SentenceHint>
+
+          <div style={style.bottomRightBox}>
+            <Button style={style.checkButton} onClick={this.checkAnswer.bind(this)} hidden={!this.canCheckAnswer()}>Check Answer</Button>
+            <Arrow style={style.skipButton} onClick={this.props.onSkip} width={175}>{complete ? "Next" : "Skip"}</Arrow>
+          </div>
         </Block>
 
-        <Button style={style.homeButton} onClick={this.props.onBack}>Home</Button>
-        <div style={style.bottomRightBox}>
-          <Button style={style.checkButton} onClick={this.checkAnswer.bind(this)} disabled={!this.canCheckAnswer()}>Check Answer</Button>
-          <Arrow style={style.skipButton} onClick={this.props.onSkip}>Skip</Arrow>
-        </div>
+        <span style={style.homeButton} onClick={this.props.onBack}>Menu</span>
         {this.renderModals()}
       </Block>
     );

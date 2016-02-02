@@ -25,19 +25,19 @@ export default function keyboardListener(Parent) {
 
     _onKeyDown(event) {
       if(this.onKeyDown) {
-        this.onKeyDown(getKeyChar(event));
+        this.onKeyDown(event);
       }
     }
 
     _onKeyUp(event) {
       if(this.onKeyUp) {
-        this.onKeyUp(getKeyChar(event));
+        this.onKeyUp(event);
       }
     }
 
     _onKeyPress(event) {
       if(this.onKeyPress) {
-        this.onKeyPress(getKeyChar(event));
+        this.onKeyPress(event);
       }
     }
   };

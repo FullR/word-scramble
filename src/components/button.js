@@ -6,6 +6,7 @@ const colorStyle = (colorValue) => {
   const activeColor = Color(colorValue).darken(0.2).hexString();
   return {
     background: Color(colorValue).hexString(),
+
     ":hover": {
       background: activeColor,
     },
@@ -21,6 +22,9 @@ const style = {
     cursor: "default",
     ":hover": {background: "#999"},
     ":active": {background: "#999"}
+  },
+  hidden: {
+    visibility: "hidden"
   },
   base: {
     width: 150,
@@ -47,7 +51,7 @@ export default class Button extends React.Component {
   };
 
   render() {
-    const {disabled, color} = this.props;
+    const {disabled, hidden, color} = this.props;
     return (
       <button {...this.props}
         color={null}
@@ -55,7 +59,8 @@ export default class Button extends React.Component {
           this.props.style,
           style.base,
           style[color] || colorStyle(color),
-          disabled ? style.disabled : null
+          disabled ? style.disabled : null,
+          hidden ? style.hidden : null
         ]}
       />
     );

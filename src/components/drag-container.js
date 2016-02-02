@@ -2,6 +2,7 @@ import React from "react";
 import {isFunction} from "lodash";
 import radium from "radium";
 import {DragSource} from "react-dnd";
+import {getEmptyImage} from "react-dnd-html5-backend";
 
 const source = {
   beginDrag(props) {
@@ -14,13 +15,18 @@ const source = {
     if(monitor.didDrop() && isFunction(choice.onDrop)) {
       choice.onDrop(monitor.getDropResult().value);
     }
+  },
+
+  canDrag(props, monitor) {
+    return !props.disabled;
   }
 };
 
 function collect(connect, monitor) {
   return {
     connectDragSource: connect.dragSource(),
-    isDragging: monitor.isDragging()
+    isDragging: monitor.isDragging(),
+    connectDragPreview: connect.dragPreview()
   };
 }
 

@@ -1,16 +1,17 @@
 {
   "name": "word-jumble",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "scripts": {
     "clean": "mkdir -p builds && mkdir -p dist && rm -rf builds/* && rm -rf dist/*",
     "setup": "npm run setup-cordova && npm run convert-audio",
     "setup-cordova": "scripts/setup-cordova",
     "build-cordova": "scripts/compile && scripts/build-cordova",
     "convert-audio": "node scripts/convert-audio.js",
+    "create-sprites": "node scripts/create-sprites",
     "compile": "scripts/compile",
     "dev-server": "scripts/dev-server",
     "upload": "scripts/upload",
-    "release": "npm run compile && npm run release"
+    "release": "npm run compile && npm run upload"
   },
   "dependencies": {
     "babel-core": "^6.3.21",
@@ -32,6 +33,7 @@
     "autoprefixer-loader": "^3.1.0",
     "babel-loader": "^5.3.2",
     "css-loader": "^0.19.0",
+    "css2json": "0.0.4",
     "file-loader": "^0.8.4",
     "fs-promise": "^0.3.1",
     "glob": "^5.0.14",
@@ -43,6 +45,7 @@
     "pace": "0.0.4",
     "progress": "^1.1.8",
     "sass-loader": "^2.0.1",
+    "sprity": "^1.0.8",
     "style-loader": "^0.12.4",
     "susy": "^2.2.6",
     "url-loader": "^0.5.6",

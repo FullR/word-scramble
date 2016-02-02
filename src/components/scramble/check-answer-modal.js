@@ -2,7 +2,7 @@ import React from "react";
 import Center from "components/center";
 import Block from "components/block";
 import Modal from "components/modal";
-import Medal from "components/medal";
+import ScoreMedal from "components/score-medal";
 import Button from "components/button";
 
 const style = {
@@ -41,7 +41,7 @@ const style = {
 
 export default class CheckAnswerModal extends React.Component {
   render() {
-    const {correct, onNextClick, onMenuClick, onShowClick, onOverlayClick} = this.props;
+    const {correct, onNextClick, onShowClick, onOverlayClick, onClose, score} = this.props;
 
     return (
       <Modal width={600} onOverlayClick={onOverlayClick}>
@@ -49,7 +49,7 @@ export default class CheckAnswerModal extends React.Component {
 
         <Center>
           {correct ?
-            <Medal/> :
+            <ScoreMedal score={score}/> :
             <div style={style.incorrectLabel}>
               <span>Press the close button to continue trying.</span>
             </div>
@@ -60,7 +60,7 @@ export default class CheckAnswerModal extends React.Component {
           {correct ? null :
             <Button style={style.showAnswerButton} onClick={onShowClick}>Show Correct Answer</Button>
           }
-          <Button style={style.homeButton} onClick={onMenuClick}>Menu</Button>
+          <Button style={style.homeButton} onClick={onClose}>Close</Button>
           <Button style={style.nextButton} onClick={onNextClick}>{correct ? "Next" : "Skip"}</Button>
         </Block>
       </Modal>
