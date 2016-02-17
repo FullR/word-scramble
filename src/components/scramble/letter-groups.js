@@ -1,10 +1,13 @@
 import React from "react";
 import radium from "radium";
+import shuffle from "lodash/shuffle";
 import {DragDropContext} from "react-dnd";
 import dndBackend from "dnd-backend";
 import Block from "components/block";
 import Belt from "components/belt";
+import Button from "components/button";
 import Choice from "./choice";
+import getEventKey from "util/get-event-key";
 
 function swapAt(arrA, arrB, aIndex, bIndex) {
   const cloneA = arrA.slice();
@@ -27,7 +30,8 @@ function swapIndexes(arr, a, b) {
 const rowStyle = {
   position: "absolute",
   width: "100%",
-  textAlign: "center"
+  textAlign: "center",
+  overflow: "visible"
 };
 const style = {
   base: {
@@ -40,7 +44,16 @@ const style = {
   },
   bottom: {
     ...rowStyle,
-    bottom: 20
+    bottom: 100
+  },
+  shuffleButtonContainer: {
+    position: "absolute",
+    bottom: 20,
+    width: "100%",
+    textAlign: "center"
+  },
+  shuffleButton: {
+    display: "inline-block"
   }
 };
 
@@ -50,6 +63,31 @@ export default class LetterGroups extends React.Component {
   static defaultProps = {
     rowSpacing: 100
   };
+
+  constructor(props) {
+    super(props);
+    this.onKeyDown = this.onKeyDown.bind(this);
+  }
+
+  componentDidMount() {
+    window.addEventListener("keypress", this.onKeyDown);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("keypress", this.onKeyDown);
+  }
+
+  onKeyDown(event) {
+    event.preventDefault();
+    const {unselected, selected} = this.props;
+    const c = String.fromCharCode(getEventKey(event)).toLowerCase();
+    const unselectedIndex = unselected.findIndex((choice) => choice.value === c);
+    console.log(event);
+    if(unselectedIndex !== -1) {
+      const emptySelectedIndex = selected.findIndex((choice) => !choice.value);
+      this.onChange(...swapAt(unselected, selected, unselectedIndex, emptySelectedIndex));
+    }
+  }
 
   getChoiceSize() {
     const {unselected} = this.props;
@@ -123,6 +161,33 @@ export default class LetterGroups extends React.Component {
     }
   }
 
+  clearSelected(choice) {
+    if(choice.value) {
+      const {unselected, selected} = this.props;
+      const emptyUnselectedIndex = unselected.findIndex((choice) => !choice.value);
+      const choiceIndex = selected.indexOf(choice);
+      if(emptyUnselectedIndex !== -1) {
+        this.onChange(...swapAt(unselected, selected, emptyUnselectedIndex, choiceIndex));
+      }
+    }
+  }
+
+  autoplace(choice) {
+    if(choice.value) {
+      const {unselected, selected} = this.props;
+      const emptySelectedIndex = selected.findIndex((choice) => !choice.value);
+      const choiceIndex = unselected.indexOf(choice);
+      if(emptySelectedIndex !== -1) {
+        this.onChange(...swapAt(unselected, selected, choiceIndex, emptySelectedIndex));
+      }
+    }
+  }
+
+  shuffle() {
+    const {unselected, selected} = this.props;
+    this.onChange(shuffle(unselected), selected);
+  }
+
   render() {
     const {unselected, selected, unselectedHintIndex, selectedHintIndex, rowSpacing, disabled, children} = this.props;
     const {width, height} = this.getChoiceSize();
@@ -144,6 +209,7 @@ export default class LetterGroups extends React.Component {
               disabled={disabled}
               width={width}
               height={height}
+              onDoubleClick={() => this.clearSelected(choice)}
             />
           )}
         </div>
@@ -159,8 +225,12 @@ export default class LetterGroups extends React.Component {
               disabled={disabled}
               width={width}
               height={height}
+              onDoubleClick={() => this.autoplace(choice)}
             />
           )}
+        </div>
+        <div style={style.shuffleButtonContainer}>
+          <Button style={style.shuffleButton} onClick={::this.shuffle}>Shuffle</Button>
         </div>
         {children}
       </Block>

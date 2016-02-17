@@ -30,7 +30,7 @@ export default class EndGame extends React.Component {
           <p style={style.text}>
             {allComplete ?
               <span>You've completed all of the puzzles.<br/>Return to the menu and clear your progress to play again.</span> :
-              <span>You've finished the game, but there are still some unsolved puzzles.<br/>Return to the menu to finish the unsolved puzzles</span>
+              <span>You've finished the game, but there are still some unsolved puzzles.<br/>Return to the menu to finish the unsolved puzzles.</span>
             }
           </p>
 

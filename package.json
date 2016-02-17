@@ -1,6 +1,6 @@
 {
   "name": "word-jumble",
-  "version": "0.0.7",
+  "version": "0.0.10",
   "scripts": {
     "clean": "mkdir -p builds && mkdir -p dist && rm -rf builds/* && rm -rf dist/*",
     "setup": "npm run setup-cordova && npm run convert-audio",
@@ -9,7 +9,7 @@
     "convert-audio": "node scripts/convert-audio.js",
     "create-sprites": "node scripts/create-sprites",
     "compile": "scripts/compile",
-    "dev-server": "scripts/dev-server",
+    "start": "scripts/dev-server",
     "upload": "scripts/upload",
     "release": "npm run compile && npm run upload"
   },

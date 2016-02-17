@@ -17,28 +17,28 @@ export default function keyboardListener(Parent) {
       window.addEventListener("keypress", this._onKeyPress);
     }
 
+    componentDidMount() {
+      if(this.onKeyDown) window.addEventListener("keydown", this._onKeyDown);
+      if(this.onKeyUp) window.addEventListener("keyup", this._onKeyUp);
+      if(this.onKeyPress) window.addEventListener("keypress", this._onKeyPress);
+    }
+
     componentWillUnmount() {
-      window.removeEventListener("keydown", this._onKeyDown);
-      window.removeEventListener("keyup", this._onKeyUp);
-      window.removeEventListener("keypress", this._onKeyPress);
+      if(this.onKeyDown) window.removeEventListener("keydown", this._onKeyDown);
+      if(this.onKeyUp) window.removeEventListener("keyup", this._onKeyUp);
+      if(this.onKeyPress) window.removeEventListener("keypress", this._onKeyPress);
     }
 
     _onKeyDown(event) {
-      if(this.onKeyDown) {
-        this.onKeyDown(event);
-      }
+      this.onKeyDown(event);
     }
 
     _onKeyUp(event) {
-      if(this.onKeyUp) {
-        this.onKeyUp(event);
-      }
+      this.onKeyUp(event);
     }
 
     _onKeyPress(event) {
-      if(this.onKeyPress) {
-        this.onKeyPress(event);
-      }
+      this.onKeyPress(event);
     }
   };
 }

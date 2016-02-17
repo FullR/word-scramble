@@ -47,13 +47,15 @@ const style = {
     marginRight: 10
   },
   skipButton: {
-    position: "relative",
-    top: -22,
-    verticalAlign: "top",
-    marginLeft: 10
+    //position: "relative",
+    //top: -22,
+    //verticalAlign: "top",
+    //marginLeft: 10
+    display: "block"
   },
   checkButton: {
-    verticalAlign: "top"
+    //verticalAlign: "top"
+    display: "block"
   },
   homeButton: {
     position: "absolute",
@@ -251,11 +253,11 @@ export default class Scramble extends React.Component {
     return (
       <Block style={style.base}>
         <Block style={style.top}>
-          <LetterGroups {...letterGroupProps} height={window.height - 280}/>
           <Block style={style.definition}>
-              Definition:<br/>
-              {definition}
+            Definition:<br/>
+            {definition}
           </Block>
+          <LetterGroups {...letterGroupProps} height={window.height - 320}/>
         </Block>
 
         <Block style={style.footer}>

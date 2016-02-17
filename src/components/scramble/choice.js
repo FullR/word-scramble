@@ -48,11 +48,11 @@ export default class Choice extends React.Component {
     height: 100
   };
   render() {
-    const {value, index, onDrop, type, highlighted, disabled, width, height} = this.props;
+    const {value, index, onDrop, type, highlighted, disabled, width, height, onDoubleClick} = this.props;
     const boxStyle = {width, height, fontSize: Math.min(width, height) * 0.8};
 
     return (
-      <DropContainer value={{type, index}} overStyle={style.over} style={[
+      <DropContainer value={{type, index}} overStyle={style.over} onDoubleClick={onDoubleClick} style={[
         this.props.style,
         style.base,
         value ? style.filled : null,
