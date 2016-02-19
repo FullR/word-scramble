@@ -1,0 +1,34 @@
+@mixin with-color($name, $color, $hover-color) {
+  &--color-#{$name} {
+    background: $color;
+
+    &:hover,
+    &:active {
+      background: $hover-color;
+    }
+  }
+}
+
+.Button {
+  @include with-color("red",  rgb(153, 0, 0), rgb(122, 0, 0));
+  @include with-color("green", rgb(0, 153, 0), rgb(0, 122, 0));
+  @include with-color("blue",  rgb(0, 0, 153), rgb(0, 0, 122));
+
+  color: #FFF;
+  padding: 5px 15px 5px 15px;
+  border: 2px solid #444;
+  outline: none;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 22px;
+
+  &--disabled {
+    background: #999;
+    border: 2px solid #777;
+
+    &:hover,
+    &:active {
+      background: #999;
+    }
+  }
+}

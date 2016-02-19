@@ -1,0 +1,11 @@
+.Puzzle-list-item {
+  width: 50%;
+  height: 25%;
+  padding: 20px;
+  font-size: 20px;
+  cursor: pointer;
+
+  // &:nth-child(n+6) {
+  //   border-left: 1px solid #444;
+  // }
+}

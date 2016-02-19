@@ -1,0 +1,19 @@
+.Confirm-modal {
+  &__text {
+    width: 100%;
+    text-align: center;
+    font-size: 22px;
+  }
+
+  &__confirm {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+  }
+
+  &__cancel {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+  }
+}

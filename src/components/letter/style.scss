@@ -1,0 +1,14 @@
+$letters: a b c d e f g h i j k l m n o p q r s t u v w x y z;
+
+.Letter {
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  width: 100px;
+  height: 120px;
+
+  @each $letter in $letters {
+    &--#{$letter} {
+      background-image: url("../../../images/letters/#{$letter}.png");
+    }
+  }
+}

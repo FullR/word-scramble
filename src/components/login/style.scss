@@ -1,0 +1,25 @@
+.Login {
+  &__header {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    top: 50px;
+    text-align: center;
+    font-size: 25px;
+    font-weight: 800;
+  }
+
+  &__user-list {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  &__login-button {
+    position: absolute;
+    right: 50px;
+    bottom: 50px;
+    cursor: pointer;
+  }
+}

@@ -1,0 +1,40 @@
+.User-list-item {
+  position: relative;
+  width: 100%;
+  padding: 20px;
+  font-size: 25px;
+  font-weight: 800;
+  cursor: pointer;
+  border-top: 1px solid #DDD;
+  border-bottom: 1px solid #DDD;
+
+  &:first-child {
+    border-top: none;
+  }
+
+  &:hover {
+    background: rgba(0, 0, 255, 0.1);
+  }
+
+  &--selected {
+    cursor: default;
+    background: rgba(0, 0, 255, 0.2);
+    &:hover {
+      background: rgba(0, 0, 255, 0.2);
+    }
+  }
+
+  &__remove-button {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    height: 30px;
+    margin-top: -15px;
+    color: rgba(0, 0, 0, 0.4);
+    cursor: pointer;
+
+    &:hover {
+      color: rgb(255, 0, 0);
+    }
+  }
+}
