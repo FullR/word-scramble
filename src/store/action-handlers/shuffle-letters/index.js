@@ -8,7 +8,10 @@ export default function shuffleLetters(state, {puzzleId}) {
       (puzzle) => puzzle.id === puzzleId,
       (puzzle) => ({
         ...puzzle,
-        unselected: shuffle(puzzle.unselected)
+        unselected: [
+          ...shuffle(puzzle.unselected.filter((choice) => !!choice.letter)),
+          ...puzzle.unselected.filter((choice) => !choice.letter)
+        ]
       })
     )
   };
