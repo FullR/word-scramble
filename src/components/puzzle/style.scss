@@ -3,6 +3,7 @@
   flex-direction: column;
 
   &__top {
+    position: relative;
     flex: 1 1 auto;
     width: 100%;
     background: #8cefff;
@@ -16,6 +17,17 @@
 
   &__unselected,
   &__selected {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 100%;
+    text-align: center;
+  }
+
+  &__shuffle-button-container {
+    position: absolute;
+    bottom: 20px;
+    left: 0;
     width: 100%;
     text-align: center;
   }

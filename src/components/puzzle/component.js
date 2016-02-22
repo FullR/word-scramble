@@ -48,6 +48,23 @@ export default class Puzzle extends React.Component {
     });
   }
 
+  shuffleLetters() {
+    store.dispatch({
+      type: actions.SHUFFLE_LETTERS,
+      puzzleId: this.props.puzzleId
+    })
+  }
+
+  getLetterSize() {
+    const {length} = this.props.unselected;
+
+    switch(true) {
+      case length <= 5: return "large";
+      case length >= 10: return "small";
+      default: return "medium";
+    }
+  }
+
   render() {
     const {
       selected,
@@ -59,6 +76,7 @@ export default class Puzzle extends React.Component {
       unselectedHintIndex,
       className
     } = this.props;
+    const letterSize = this.getLetterSize();
     const classNames = cn("Puzzle", className);
 
     return (
@@ -75,6 +93,7 @@ export default class Puzzle extends React.Component {
                   value={value}
                   onDrop={onDrop}
                   glowing={selectedHintIndex === i}
+                  size={letterSize}
                 />
               );
             })}
@@ -91,12 +110,16 @@ export default class Puzzle extends React.Component {
                   value={value}
                   onDrop={onDrop}
                   glowing={unselectedHintIndex === i}
+                  size={letterSize}
                 />
               );
             })}
           </div>
 
           <div>{definition}</div>
+          <div className="Puzzle__shuffle-button-container">
+            <Button onClick={this.shuffleLetters.bind(this)}>Shuffle</Button>
+          </div>
         </div>
 
         <div className="Puzzle__bottom">

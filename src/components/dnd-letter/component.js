@@ -7,14 +7,14 @@ import Letter from "components/letter";
 
 export default class DndLetter extends React.Component {
   render() {
-    const {value, onDrop, letter, className} = this.props;
+    const {value, onDrop, letter, className, size} = this.props;
     const classNames = cn("Dnd-letter", className);
 
     return (
-      <Frame {...this.props} onDrop={null} value={null} letter={null}>
+      <Frame {...this.props} onDrop={null} value={null} letter={null} size={null}>
         <DropContainer onDrop={onDrop} className="Dnd-letter__drop">
           <DragContainer value={value} className="Dnd-letter__drag">
-            <Letter letter={letter}/>
+            <Letter letter={letter} size={size}/>
           </DragContainer>
         </DropContainer>
       </Frame>

@@ -8,6 +8,7 @@ import selectUser from "./action-handlers/select-user/index";
 import showSentenceHint from "./action-handlers/show-sentence-hint/index";
 import showLetterHint from "./action-handlers/show-letter-hint/index";
 import moveLetter from "./action-handlers/move-letter/index";
+import shuffleLetters from "./action-handlers/shuffle-letters/index";
 
 const actionHandlers = {
   [actions.LOAD_STATE]: loadState,
@@ -16,7 +17,8 @@ const actionHandlers = {
   [actions.SELECT_USER]: selectUser,
   [actions.SHOW_SENTENCE_HINT]: showSentenceHint,
   [actions.SHOW_LETTER_HINT]: showLetterHint,
-  [actions.MOVE_LETTER]: moveLetter
+  [actions.MOVE_LETTER]: moveLetter,
+  [actions.SHUFFLE_LETTERS]: shuffleLetters
 };
 
 export default function reducer(state=initialState, action={}) {

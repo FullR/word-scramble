@@ -1,0 +1,14 @@
+.Alert-modal {
+  &__text {
+    font-size: 22px;
+    width: 100%;
+    text-align: center;
+  }
+
+  &__button-container {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+  }
+}

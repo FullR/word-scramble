@@ -5,6 +5,7 @@ import UserList from "../user-list";
 import UserListItem from "../user-list-item";
 import UserListForm from "../user-list-form";
 import ConfirmModal from "../confirm-modal";
+import AlertModal from "../alert-modal";
 import cn from "util/cn";
 
 
@@ -21,8 +22,13 @@ export default class Login extends React.Component {
     super(props);
     this.state = {
       username: "",
-      userToDelete: null
+      userToDelete: null,
+      duplicateUserNameModal: false
     };
+  }
+
+  hideDuplicateUserNameModal() {
+    this.setState({duplicateUserNameModal: false});
   }
 
   showDeleteModal(userToDelete) {
@@ -55,9 +61,15 @@ export default class Login extends React.Component {
   }
 
   createUser() {
-    const {onCreateUser} = this.props;
-
-    if(onCreateUser) {
+    const {onCreateUser, users} = this.props;
+    const username = this.state.username.trim();
+    console.log(users, username);
+    if(users.some((user) => user.name === username)) {
+      this.setState({
+        username: "",
+        duplicateUserNameModal: true
+      });
+    } else if(onCreateUser) {
       onCreateUser(this.state.username);
       this.setState({
         username: ""
@@ -66,7 +78,7 @@ export default class Login extends React.Component {
   }
 
   renderModals() {
-    const {userToDelete} = this.state;
+    const {userToDelete, duplicateUserNameModal} = this.state;
 
     if(userToDelete) {
       return (
@@ -77,6 +89,12 @@ export default class Login extends React.Component {
           Are you sure you want to delete the user <strong>{userToDelete.name}</strong>?<br/>
           This action cannot be undone.
         </ConfirmModal>
+      );
+    } else if(duplicateUserNameModal) {
+      return (
+        <AlertModal onClose={this.hideDuplicateUserNameModal.bind(this)}>
+          A user with that name already exists.
+        </AlertModal>
       );
     }
   }

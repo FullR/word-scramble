@@ -9,5 +9,6 @@ export default stringMirror(
   "SHOW_LETTER_HINT",
   "SHOW_SENTENCE_HINT",
   "CHECK_ANSWER",
-  "SHOW_CORRECT_ANSWER"
+  "SHOW_CORRECT_ANSWER",
+  "SHUFFLE_LETTERS"
 );
