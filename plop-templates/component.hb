@@ -1,13 +1,13 @@
 import React from "react";
-import cn from "util/cn";
+import bembam from "bembam";
 
 export default class {{pascalCase name}} extends React.Component {
   render() {
     const {className} = this.props;
-    const classNames = cn("{{upperDashCase name}}", className);
+    const cn = bembam("{{upperDashCase name}}", className);
 
     return (
-      <div {...this.props} className={classNames}/>
+      <div {...this.props} className={cn}/>
     );
   }
 }

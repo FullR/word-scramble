@@ -1,6 +1,6 @@
 import React from "react";
 import {noop} from "lodash";
-import cn from "util/cn";
+import bembam from "bembam";
 
 export default class UserListItem extends React.Component {
   static propTypes = {
@@ -20,12 +20,13 @@ export default class UserListItem extends React.Component {
 
   render() {
     const {selected, children, className} = this.props;
-    const classNames = cn("User-list-item", selected ? `User-list-item--selected` : null, className);
+    const cn = bembam("User-list-item", className)
+      .mod("selected", selected);
 
     return (
-      <div {...this.props} className={classNames}>
+      <div {...this.props} className={cn}>
         {children}
-        <div className="User-list-item__remove-button" onClick={this.onRemoveClick.bind(this)}>
+        <div className={cn.el("remove-button")} onClick={this.onRemoveClick.bind(this)}>
           {"\u2716"}
         </div>
       </div>

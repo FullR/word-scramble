@@ -7,7 +7,12 @@ export default function moveLetter(state, {start, end, puzzleId}) {
     ...state,
     puzzles: replaceWhere(state.puzzles,
       (puzzle) => puzzle.id === puzzleId,
-      (puzzle) => movePuzzleLetter(puzzle, start, end)
+      (puzzle) => ({
+        ...puzzle,
+        ...movePuzzleLetter(puzzle, start, end),
+        selectedHintIndex: null,
+        unselectedHintIndex: null
+      })
     )
   };
 }
@@ -51,19 +56,19 @@ function selectedToSelected(puzzle, sourceIndex, targetIndex) {
   } else {
     unselected = puzzle.unselected;
   }
-  return {...puzzle, selected, unselected};
+  return {selected, unselected};
 }
 
 function unselectedToUnselected(puzzle, sourceIndex, targetIndex) {
-  return {...puzzle, unselected: swapIn(puzzle.unselected, sourceIndex, targetIndex)};
+  return {unselected: swapIn(puzzle.unselected, sourceIndex, targetIndex)};
 }
 
 function selectedToUnselected(puzzle, sourceIndex, targetIndex) {
   const [unselected, selected] = swapBetween(puzzle.unselected, puzzle.selected, sourceIndex, targetIndex);
-  return {...puzzle, selected, unselected};
+  return {selected, unselected};
 }
 
 function unselectedToSelected(puzzle, sourceIndex, targetIndex) {
   const [selected, unselected] = swapBetween(puzzle.selected, puzzle.unselected, sourceIndex, targetIndex);
-  return {...puzzle, selected, unselected};
+  return {selected, unselected};
 }

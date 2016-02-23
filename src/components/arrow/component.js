@@ -1,5 +1,5 @@
 import React from "react";
-import cn from "util/cn";
+import bembam from "bembam";
 
 export default class Arrow extends React.Component {
   static propTypes = {
@@ -14,18 +14,15 @@ export default class Arrow extends React.Component {
 
   render() {
     const {color, flipped, className} = this.props;
-    const classNames = cn(
-      "Arrow",
-      `Arrow--color-${color}`,
-      flipped ? `Arrow--flipped` : null,
-      className
-    );
+    const cn = bembam("Arrow", className)
+      .mod("flipped", flipped)
+      .mod(`color-${color}`);
 
     return (
-      <div {...this.props} className={classNames}>
-        <div className="Arrow__content">
-          <div className="Arrow__image"/>
-          <div className="Arrow__text">{this.props.children}</div>
+      <div {...this.props} className={cn}>
+        <div className={cn.el("content")}>
+          <div className={cn.el("image")}/>
+          <div className={cn.el("text")}>{this.props.children}</div>
         </div>
       </div>
     );

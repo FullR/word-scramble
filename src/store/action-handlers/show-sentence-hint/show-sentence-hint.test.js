@@ -3,7 +3,7 @@ import {createStore} from "redux";
 import reducer from "../../reducer";
 import actions from "../../actions";
 
-describe("showSentenceHint", function() {
+describe("action: SHOW_SENTENCE_HINT", function() {
   it("should enable `showingSentenceHint`", () => {
     const store = createStore(reducer);
     store.dispatch({

@@ -4,7 +4,7 @@ import reducer from "../../reducer";
 import actions from "../../actions";
 import moveLetter from "./index";
 
-describe("moveLetter", function() {
+describe("action: MOVE_LETTER", function() {
   it("should swap unselected letters when one is dragged to the other", () => {
     const state = {
       puzzles: [
@@ -30,11 +30,13 @@ describe("moveLetter", function() {
     };
 
     const newState = moveLetter(state, action);
-    expect(newState.puzzles[0]).to.deep.equal({
-      id: "testpuzzle",
-      selected: [{letter: null},{letter: null},{letter: null},{letter: null},{letter: null},{letter: null}],
-      unselected: [{letter: "b"},{letter: "o"},{letter: "o"},{letter: "f"},{letter: "a"},{letter: "r"}]
-    });
+    expect(newState.puzzles[0].selected).to.deep.equal([
+      {letter: null},{letter: null},{letter: null},{letter: null},{letter: null},{letter: null}
+    ]);
+
+    expect(newState.puzzles[0].unselected).to.deep.equal([
+      {letter: "b"},{letter: "o"},{letter: "o"},{letter: "f"},{letter: "a"},{letter: "r"}
+    ]);
   });
 
   it("should move the target letter to the first blank unselected space when a selected letter is moved to it", () => {
@@ -55,11 +57,13 @@ describe("moveLetter", function() {
     };
     const newState = moveLetter(state, action);
 
-    expect(newState.puzzles[0]).to.deep.equal({
-      id: "testpuzzle",
-      selected: [{letter: null},{letter: "c"},{letter: null},{letter: null},{letter: null},{letter: null}],
-      unselected: [{letter: "a"},{letter: "b"},{letter: null},{letter: "d"},{letter: "e"},{letter: "f"}]
-    });
+    expect(newState.puzzles[0].selected).to.deep.equal([
+      {letter: null},{letter: "c"},{letter: null},{letter: null},{letter: null},{letter: null}
+    ]);
+
+    expect(newState.puzzles[0].unselected).to.deep.equal([
+      {letter: "a"},{letter: "b"},{letter: null},{letter: "d"},{letter: "e"},{letter: "f"}
+    ]);
   });
 
   it("should swap the letters when moving an unselected letter to a selected letter", () => {
@@ -80,11 +84,13 @@ describe("moveLetter", function() {
     };
     const newState = moveLetter(state, action);
 
-    expect(newState.puzzles[0]).to.deep.equal({
-      id: "testpuzzle",
-      selected: [{letter: null},{letter: "a"},{letter: "c"},{letter: null},{letter: null},{letter: null}],
-      unselected: [{letter: null},{letter: "b"},{letter: null},{letter: "d"},{letter: "e"},{letter: "f"}]
-    });
+    expect(newState.puzzles[0].selected).to.deep.equal([
+      {letter: null},{letter: "a"},{letter: "c"},{letter: null},{letter: null},{letter: null}
+    ]);
+
+    expect(newState.puzzles[0].unselected).to.deep.equal([
+      {letter: null},{letter: "b"},{letter: null},{letter: "d"},{letter: "e"},{letter: "f"}
+    ]);
   });
 
   it("should swap the letters when moving a selected letter to an unselected letter", () => {
@@ -105,11 +111,13 @@ describe("moveLetter", function() {
     };
     const newState = moveLetter(state, action);
 
-    expect(newState.puzzles[0]).to.deep.equal({
-      id: "testpuzzle",
-      selected: [{letter: null},{letter: "a"},{letter: "c"},{letter: null},{letter: null},{letter: null}],
-      unselected: [{letter: null},{letter: "b"},{letter: null},{letter: "d"},{letter: "e"},{letter: "f"}]
-    });
+    expect(newState.puzzles[0].selected).to.deep.equal([
+      {letter: null},{letter: "a"},{letter: "c"},{letter: null},{letter: null},{letter: null}
+    ]);
+
+    expect(newState.puzzles[0].unselected).to.deep.equal([
+      {letter: null},{letter: "b"},{letter: null},{letter: "d"},{letter: "e"},{letter: "f"}
+    ]);
   });
 
   it("shouldn't change the puzzle when the start letter is blank", () => {
@@ -130,7 +138,9 @@ describe("moveLetter", function() {
     ];
 
     let newState = moveActions.reduce((state, action) => moveLetter(state, action), state);
-    expect(newState.puzzles[0]).to.equal(state.puzzles[0]);
+
+    expect(newState.puzzles[0].selected).to.deep.equal(state.puzzles[0].selected);
+    expect(newState.puzzles[0].unselected).to.deep.equal(state.puzzles[0].unselected);
   });
 
   it("should not mutate the state", () => {

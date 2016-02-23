@@ -8,6 +8,7 @@ $font-size: 34px;
   font-size: $font-size;
   z-index: 6;
   background-color: transparent;
+  color: #FFF;
 
   &:hover .Arrow__image {
     background-image: url("../../../images/arrow_hover.png");

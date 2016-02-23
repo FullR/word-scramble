@@ -1,6 +1,6 @@
 import React from "react";
+import bembam from "bembam";
 import {noop} from "lodash";
-import cn from "util/cn";
 
 export default class Modal extends React.Component {
   static propTypes = {
@@ -13,13 +13,13 @@ export default class Modal extends React.Component {
 
   render() {
     const {onOverlayClick, children, className} = this.props;
-    const classNames = cn("Modal", className);
+    const cn = bembam("Modal", className);
 
     return (
-      <div {...this.props} className={classNames} onOverlayClick={null}>
-        <div className="Modal__overlay" onClick={onOverlayClick}/>
-        <div className="Modal__window">
-          <div className="Modal__window-content">
+      <div {...this.props} className={cn} onOverlayClick={null}>
+        <div className={cn.el("overlay")} onClick={onOverlayClick}/>
+        <div className={cn.el("window")}>
+          <div className={cn.el("window-content")}>
             {children}
           </div>
         </div>

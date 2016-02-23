@@ -20,6 +20,7 @@ export default function createUser(state, {name}) {
           userId: id,
           puzzleDataId: puzzle.id,
           started: false,
+          complete: false,
           showingSentenceHint: false,
           letterHintsUsed: [],
           selectedHintIndex: null,

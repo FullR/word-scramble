@@ -1,4 +1,5 @@
 import React from "react";
+import bembam from "bembam";
 import Screen from "../screen";
 import Button from "../button";
 import UserList from "../user-list";
@@ -6,7 +7,6 @@ import UserListItem from "../user-list-item";
 import UserListForm from "../user-list-form";
 import ConfirmModal from "../confirm-modal";
 import AlertModal from "../alert-modal";
-import cn from "util/cn";
 
 
 export default class Login extends React.Component {
@@ -63,7 +63,7 @@ export default class Login extends React.Component {
   createUser() {
     const {onCreateUser, users} = this.props;
     const username = this.state.username.trim();
-    console.log(users, username);
+
     if(users.some((user) => user.name === username)) {
       this.setState({
         username: "",
@@ -102,12 +102,12 @@ export default class Login extends React.Component {
   render() {
     const {users, currentUser, onSubmit, className} = this.props;
     const {selectedUserId, username} = this.state;
-    const classNames = cn("Login", className);
+    const cn = bembam("Login", className);
 
     return (
-      <Screen {...this.props} className={classNames} onSubmit={null}>
-        <div className="Login__header">Create or Select a user</div>
-        <div className="Login__user-list">
+      <Screen {...this.props} className={cn} onSubmit={null}>
+        <div className={cn.el("header")}>Create or Select a user</div>
+        <div className={cn.el("user-list")}>
           <UserListForm
             value={username}
             onChange={this.updateUsername.bind(this)}
@@ -126,7 +126,7 @@ export default class Login extends React.Component {
             )}
           </UserList>
         </div>
-        <Button className="Login__login-button" onClick={onSubmit} disabled={!currentUser}>Login</Button>
+        <Button className={cn.el("login-button")} onClick={onSubmit} disabled={!currentUser}>Login</Button>
         {this.renderModals()}
       </Screen>
     );

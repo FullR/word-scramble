@@ -4,7 +4,7 @@ import reducer from "../../reducer";
 import actions from "../../actions";
 import puzzleData from "puzzle-data";
 
-describe("createUser", function() {
+describe("action: CREATE_USER", function() {
   it("should add a user and puzzles for the added user", () => {
     const store = createStore(reducer);
     store.dispatch({

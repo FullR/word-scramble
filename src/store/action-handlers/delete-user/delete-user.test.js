@@ -3,7 +3,7 @@ import {createStore} from "redux";
 import reducer from "../../reducer";
 import actions from "../../actions";
 
-describe("deleteUser", function() {
+describe("action: DELETE_USER", function() {
   it("should remove a user and their puzzle data", () => {
     const store = createStore(reducer);
     store.dispatch({

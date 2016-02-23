@@ -1,5 +1,5 @@
 import React from "react";
-import cn from "util/cn";
+import bembam from "bembam";
 
 export default class Button extends React.Component {
   static propTypes = {
@@ -12,15 +12,12 @@ export default class Button extends React.Component {
 
   render() {
     const {color, disabled, className} = this.props;
-    const classNames = cn(
-      "Button",
-      `Button--color-${color}`,
-      disabled ? `Button--disabled` : null,
-      className
-    );
+    const cn = bembam("Button", className)
+      .mod(`color-${color}`)
+      .mod("disabled", disabled);
 
     return (
-      <button {...this.props} className={classNames}/>
+      <button {...this.props} className={cn}/>
     );
   }
 }

@@ -3,6 +3,7 @@ import Splash from "components/splash";
 import Login from "components/login";
 import Menu from "components/menu";
 import Puzzle from "components/puzzle";
+import EndGame from "components/end-game";
 import store from "store";
 import actions from "store/actions";
 import storeListener from "decorators/store-listener";
@@ -15,6 +16,7 @@ export default class Application extends React.Component {
     this.state = {
       showingSplash: true,
       showingLogin: false,
+      showingEndGame: false,
       currentPuzzleId: null
     };
   }
@@ -61,16 +63,58 @@ export default class Application extends React.Component {
     });
   }
 
+  hidePuzzle() {
+    this.setState({
+      currentPuzzleId: null
+    });
+  }
+
+  hideEndGame() {
+    this.setState({
+      showingEndGame: false
+    });
+  }
+
+  nextPuzzle() {
+    const {currentPuzzleId} = this.state;
+    const {store} = this.props;
+    const {currentUser, puzzles} = store;
+    const userPuzzles = puzzles.filter((puzzle) => puzzle.userId === currentUser);
+    const currentPuzzleIndex = userPuzzles.findIndex((puzzle) => puzzle.id === currentPuzzleId);
+
+    for(let i = currentPuzzleIndex + 1, length = userPuzzles.length; i < length; i++) {
+      if(!userPuzzles[i].complete) {
+        this.setState({
+          currentPuzzleId: userPuzzles[i].id
+        });
+        return;
+      }
+    }
+
+    this.setState({
+      showingEndGame: true,
+      currentPuzzleId: null
+    });
+  }
+
   render() {
     const {store} = this.props;
     const {users, currentUser, puzzles} = store;
-    const {currentPuzzleId, showingSplash, showingLogin} = this.state;
+    const {currentPuzzleId, showingSplash, showingLogin, showingEndGame} = this.state;
     const currentPuzzle = currentPuzzleId ? puzzles.find((puzzle) => puzzle.id === currentPuzzleId) : null;
 
     switch(true) {
+      case showingEndGame: return (
+        <EndGame
+          puzzles={puzzles.filter((puzzle) => puzzle.userId === currentUser)}
+          onBack={this.hideEndGame.bind(this)}
+        />
+      );
       case !!currentPuzzle: return (
         <Puzzle {...currentPuzzle} {...getPuzzleData(currentPuzzle.puzzleDataId)}
           puzzleId={currentPuzzle.id}
+          onBack={this.hidePuzzle.bind(this)}
+          onNext={this.nextPuzzle.bind(this)}
         />
       );
       case showingSplash: return (

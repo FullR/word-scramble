@@ -1,7 +1,7 @@
 import React from "react";
+import bembam from "bembam";
 import Screen from "../screen";
 import Button from "../button";
-import cn from "util/cn";
 
 export default class Splash extends React.Component {
   static propTypes = {
@@ -10,10 +10,10 @@ export default class Splash extends React.Component {
 
   render() {
     const {onComplete, className} = this.props;
-    const classNames = cn("Splash", className);
+    const cn = bembam("Splash", className);
 
     return (
-      <Screen {...this.props} className={classNames}>
+      <Screen {...this.props} className={cn}>
         Insert splashscreen image here
 
         <Button onClick={onComplete}>Begin</Button>

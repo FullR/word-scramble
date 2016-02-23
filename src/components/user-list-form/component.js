@@ -1,6 +1,6 @@
 import React from "react";
 import Button from "../button";
-import cn from "util/cn";
+import bembam from "bembam";
 
 export default class UserListForm extends React.Component {
   static propTypes = {
@@ -23,10 +23,10 @@ export default class UserListForm extends React.Component {
 
   render() {
     const {value, onChange, className} = this.props;
-    const classNames = cn("User-list-form", className);
+    const cn = bembam("User-list-form", className);
 
     return (
-      <form {...this.props} className={classNames} onSubmit={this.submit.bind(this)}>
+      <form {...this.props} className={cn} onSubmit={this.submit.bind(this)}>
         <input value={value} onChange={onChange}/>
         <Button disabled={!value || !value.trim().length}>Create</Button>
       </form>

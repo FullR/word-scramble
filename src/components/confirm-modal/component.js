@@ -1,8 +1,8 @@
 import React from "react";
+import bembam from "bembam";
 import {noop} from "lodash";
 import Modal from "../modal";
 import Button from "../button";
-import cn from "util/cn";
 
 export default class ConfirmModal extends React.Component {
   static propTypes = {
@@ -25,14 +25,14 @@ export default class ConfirmModal extends React.Component {
 
   render() {
     const {onConfirm, onCancel, confirmText, cancelText, confirmColor, cancelColor, children, className} = this.props;
-    const classNames = cn("Confirm-modal", className);
+    const cn = bembam("Confirm-modal", className);
 
     return (
-      <Modal {...this.props} className={classNames} onOverlayClick={onCancel}>
-        <div className="Confirm-modal__text">{children}</div>
+      <Modal {...this.props} className={cn} onOverlayClick={onCancel}>
+        <div className={cn.el("text")}>{children}</div>
 
-        <Button className="Confirm-modal__confirm" onClick={onConfirm} color={confirmColor}>Confirm</Button>
-        <Button className="Confirm-modal__cancel" onClick={onCancel} color={cancelColor}>Cancel</Button>
+        <Button className={cn.el("confirm")} onClick={onConfirm} color={confirmColor}>Confirm</Button>
+        <Button className={cn.el("cancel")} onClick={onCancel} color={cancelColor}>Cancel</Button>
       </Modal>
     );
   }

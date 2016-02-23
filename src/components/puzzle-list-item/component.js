@@ -1,5 +1,5 @@
 import React from "react";
-import cn from "util/cn";
+import bembam from "bembam";
 
 export default class PuzzleListItem extends React.Component {
   static propTypes = {
@@ -12,11 +12,11 @@ export default class PuzzleListItem extends React.Component {
 
   render() {
     const {height, style, className} = this.props;
-    const classNames = cn("Puzzle-list-item", className);
+    const cn = bembam("Puzzle-list-item", className);
     const dynamicStyle = {...style, height};
 
     return (
-      <div {...this.props} className={classNames} style={dynamicStyle}/>
+      <div {...this.props} className={cn} style={dynamicStyle}/>
     );
   }
 }

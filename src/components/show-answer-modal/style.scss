@@ -1,0 +1,36 @@
+.Show-answer-modal {
+  text-align: center;
+
+  >.Modal__window {
+    width: 600px;
+    height: 400px;
+  }
+
+  &__header {
+    font-size: 32px;
+    font-weight: 800;
+    width: 100%;
+  }
+
+  &__message {
+    margin-top: 50px;
+    font-size: 22px;
+  }
+
+  &__buttons {
+    position: absolute;
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: space-between;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+  }
+
+  &__medal {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+}

@@ -1,6 +1,6 @@
 import React from "react";
 import {DropTarget} from "react-dnd";
-import cn from "util/cn";
+import bembam from "bembam";
 require("./style.scss");
 
 const TYPE = "DRAG-CONTAINER";
@@ -26,10 +26,10 @@ function collect(connect, monitor) {
 export default class DropContainer extends React.Component {
   render() {
     const {connectDropTarget, className} = this.props;
-    const classNames = cn("Drop-container", className);
+    const cn = bembam("Drop-container", className);
 
     return connectDropTarget(
-      <div {...this.props} className={classNames} onDrop={null}/>
+      <div {...this.props} className={cn} onDrop={null}/>
     );
   }
 }

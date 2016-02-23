@@ -1,29 +1,34 @@
 import React from "react";
 import {noop} from "lodash";
-import cn from "util/cn";
+import bembam from "bembam";
 import dndContext from "dnd-context";
+import store from "store";
+import actions from "store/actions";
 import Screen from "components/screen";
 import DnDLetter from "components/dnd-letter";
 import Button from "components/button";
-import store from "store";
-import actions from "store/actions";
+import Link from "components/link";
+import Arrow from "components/arrow";
+import ShowAnswerModal from "components/show-answer-modal";
 
 @dndContext
 export default class Puzzle extends React.Component {
   static propTypes = {
-    onLetterMove: React.PropTypes.func,
     selected: React.PropTypes.array.isRequired,
     unselected: React.PropTypes.array.isRequired,
     definition: React.PropTypes.string,
     sentence: React.PropTypes.string,
-    showingSentenceHint: React.PropTypes.bool
+    showingSentenceHint: React.PropTypes.bool,
+    onBack: React.PropTypes.func,
+    onNext: React.PropTypes.func
   };
 
   static defaultProps = {
-    onLetterMove: noop,
     definition: "",
     sentence: "",
-    showingSentenceHint: false
+    showingSentenceHint: false,
+    onBack: noop,
+    onNext: noop
   };
 
   moveLetter(start, end) {
@@ -74,15 +79,17 @@ export default class Puzzle extends React.Component {
       showingSentenceHint,
       selectedHintIndex,
       unselectedHintIndex,
+      onBack,
+      onNext,
       className
     } = this.props;
     const letterSize = this.getLetterSize();
-    const classNames = cn("Puzzle", className);
+    const cn = bembam("Puzzle", className);
 
     return (
-      <Screen {...this.props} className={classNames}>
-        <div className="Puzzle__top">
-          <div className="Puzzle__selected">
+      <Screen {...this.props} className={cn}>
+        <div className={cn.el("top")}>
+          <div className={cn.el("selected")}>
             {selected.map(({id, letter}, i) => {
               const value = {location: "selected", index: i};
               const onDrop = (start) => this.moveLetter(start, value);
@@ -99,7 +106,7 @@ export default class Puzzle extends React.Component {
             })}
           </div>
 
-          <div className="Puzzle__unselected">
+          <div className={cn.el("unselected")}>
             {unselected.map(({id, letter}, i) => {
               const value = {location: "unselected", index: i};
               const onDrop = (start) => this.moveLetter(start, value);
@@ -117,19 +124,23 @@ export default class Puzzle extends React.Component {
           </div>
 
           <div>{definition}</div>
-          <div className="Puzzle__shuffle-button-container">
+          <div className={cn.el("shuffle-button-container")}>
             <Button onClick={this.shuffleLetters.bind(this)}>Shuffle</Button>
           </div>
         </div>
 
-        <div className="Puzzle__bottom">
+        <div className={cn.el("bottom")}>
           <Button onClick={this.showSentenceHint.bind(this)}>Sentence Hint</Button>
           {showingSentenceHint ?
             <div>{sentence}</div> :
             null
           }
           <Button onClick={this.showLetterHint.bind(this)}>Letter Hint</Button>
+          <Link className={cn.el("menu-link")} onClick={onBack}>Menu</Link>
+          <Arrow className={cn.el("skip-button")} onClick={onNext}>Skip</Arrow>
         </div>
+
+        <ShowAnswerModal correct/>
       </Screen>
     );
   }

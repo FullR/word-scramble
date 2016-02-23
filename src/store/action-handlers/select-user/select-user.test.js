@@ -3,7 +3,7 @@ import {createStore} from "redux";
 import reducer from "../../reducer";
 import actions from "../../actions";
 
-describe("selectUser", function() {
+describe("action: SELECT_USER", function() {
   it("should set `currentUser` to the dispatched `userId`", () => {
     const store = createStore(reducer);
     store.dispatch({

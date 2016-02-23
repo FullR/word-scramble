@@ -33,12 +33,12 @@ module.exports = (plop) => {
         type: "add",
         path: "src/components/{{dashCase name}}/index.js",
         templateFile: "plop-templates/component-loader.hb"
-      },
-      {
-        type: "add",
-        path: "src/components/{{dashCase name}}/{{dashCase name}}.test.js",
-        templateFile: "plop-templates/component-test.hb"
       }
+      // {
+      //   type: "add",
+      //   path: "src/components/{{dashCase name}}/{{dashCase name}}.test.js",
+      //   templateFile: "plop-templates/component-test.hb"
+      // }
     ]
   });
 

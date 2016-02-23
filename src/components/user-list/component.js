@@ -1,13 +1,13 @@
 import React from "react";
-import cn from "util/cn";
+import bembam from "bembam";
 
 export default class UserList extends React.Component {
   render() {
     const {className} = this.props;
-    const classNames = cn("User-list", className);
+    const cn = bembam("User-list", className);
 
     return (
-      <div {...this.props} className={classNames}/>
+      <div {...this.props} className={cn}/>
     );
   }
 }

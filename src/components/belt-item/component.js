@@ -1,13 +1,13 @@
 import React from "react";
-import cn from "util/cn";
+import bembam from "bembam";
 
 export default class BeltItem extends React.Component {
   render() {
     const {className} = this.props;
-    const classNames = cn("Belt-item", className);
+    const cn = bembam("Belt-item", className);
 
     return (
-      <div {...this.props} className={classNames}/>
+      <div {...this.props} className={cn}/>
     );
   }
 }
