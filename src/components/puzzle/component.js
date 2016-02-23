@@ -31,11 +31,23 @@ export default class Puzzle extends React.Component {
     onNext: noop
   };
 
+  constructor(props) {
+    super(props);
+    this.state = {checkingAnswer: false};
+  }
+
+  componentDidMount() {
+    store.dispatch({
+      type: actions.START_PUZZLE,
+      puzzleId: this.props.puzzleId
+    });
+  }
+
   moveLetter(start, end) {
     store.dispatch({
+      start, end,
       type: actions.MOVE_LETTER,
-      puzzleId: this.props.puzzleId,
-      start, end
+      puzzleId: this.props.puzzleId
     });
   }
 
@@ -58,6 +70,24 @@ export default class Puzzle extends React.Component {
       type: actions.SHUFFLE_LETTERS,
       puzzleId: this.props.puzzleId
     })
+  }
+
+  isCorrect() {
+    const {word, selected} = this.props;
+    return selected.map(({letter}) => letter).join("") === word;
+  }
+
+  checkAnswer() {
+    const isCorrect = this.isCorrect();
+
+    if(isCorrect) {
+      store.dispatch({
+        type: actions.COMPLETE_PUZZLE,
+        puzzleId: this.props.puzzleId
+      });
+    }
+
+    this.setState({checkingAnswer: true});
   }
 
   getLetterSize() {
@@ -83,6 +113,7 @@ export default class Puzzle extends React.Component {
       onNext,
       className
     } = this.props;
+    const {checkingAnswer} = this.state;
     const letterSize = this.getLetterSize();
     const cn = bembam("Puzzle", className);
 
@@ -136,11 +167,15 @@ export default class Puzzle extends React.Component {
             null
           }
           <Button onClick={this.showLetterHint.bind(this)}>Letter Hint</Button>
+          <Button onClick={this.checkAnswer.bind(this)}>Check Answer</Button>
           <Link className={cn.el("menu-link")} onClick={onBack}>Menu</Link>
           <Arrow className={cn.el("skip-button")} onClick={onNext}>Skip</Arrow>
         </div>
 
-        <ShowAnswerModal correct/>
+        {checkingAnswer ?
+          <ShowAnswerModal/> :
+          null
+        }
       </Screen>
     );
   }

@@ -27,6 +27,13 @@
     width: 100%;
   }
 
+  &__next-button {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translate(-50%, 0);
+  }
+
   &__medal {
     position: absolute;
     left: 50%;

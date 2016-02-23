@@ -1,4 +1,5 @@
 import React from "react";
+import Router from "components/router";
 import Splash from "components/splash";
 import Login from "components/login";
 import Menu from "components/menu";
@@ -14,32 +15,30 @@ export default class Application extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      showingSplash: true,
-      showingLogin: false,
-      showingEndGame: false,
-      currentPuzzleId: null
+      route: {
+        name: "splash"
+      }
     };
   }
 
+  setRoute(name, options) {
+    this.setState({route: {name, options}});
+  }
+
   showPuzzle(puzzleId) {
-    this.setState({currentPuzzleId: puzzleId});
+    this.setRoute("puzzle", {puzzleId});
   }
 
-  closeSplash() {
-    this.setState({
-      showingSplash: false,
-      showingLogin: true
-    });
+  showLogin() {
+    this.setRoute("login");
   }
 
-  closeLogin() {
-    const {currentUser} = this.props.store;
-    if(currentUser) {
-      this.setState({
-        showingSplash: false,
-        showingLogin: false
-      });
-    }
+  showMenu() {
+    this.setRoute("menu");
+  }
+
+  showEndGame() {
+    this.setRoute("endGame");
   }
 
   createUser(name) {
@@ -63,18 +62,6 @@ export default class Application extends React.Component {
     });
   }
 
-  hidePuzzle() {
-    this.setState({
-      currentPuzzleId: null
-    });
-  }
-
-  hideEndGame() {
-    this.setState({
-      showingEndGame: false
-    });
-  }
-
   nextPuzzle() {
     const {currentPuzzleId} = this.state;
     const {store} = this.props;
@@ -84,62 +71,107 @@ export default class Application extends React.Component {
 
     for(let i = currentPuzzleIndex + 1, length = userPuzzles.length; i < length; i++) {
       if(!userPuzzles[i].complete) {
-        this.setState({
-          currentPuzzleId: userPuzzles[i].id
-        });
+        this.showPuzzle(userPuzzles[i].id);
         return;
       }
     }
 
-    this.setState({
-      showingEndGame: true,
-      currentPuzzleId: null
-    });
+    this.showEndGame();
   }
 
   render() {
+    const {route} = this.state;
     const {store} = this.props;
     const {users, currentUser, puzzles} = store;
-    const {currentPuzzleId, showingSplash, showingLogin, showingEndGame} = this.state;
-    const currentPuzzle = currentPuzzleId ? puzzles.find((puzzle) => puzzle.id === currentPuzzleId) : null;
 
-    switch(true) {
-      case showingEndGame: return (
-        <EndGame
-          puzzles={puzzles.filter((puzzle) => puzzle.userId === currentUser)}
-          onBack={this.hideEndGame.bind(this)}
-        />
-      );
-      case !!currentPuzzle: return (
-        <Puzzle {...currentPuzzle} {...getPuzzleData(currentPuzzle.puzzleDataId)}
-          puzzleId={currentPuzzle.id}
-          onBack={this.hidePuzzle.bind(this)}
-          onNext={this.nextPuzzle.bind(this)}
-        />
-      );
-      case showingSplash: return (
+    const routes = {
+      splash: () => (
         <Splash
-          onComplete={this.closeSplash.bind(this)}
+          onComplete={this.showLogin.bind(this)}
         />
-      );
-      case showingLogin: return (
+      ),
+      login: () => (
         <Login
           users={users}
           currentUser={currentUser}
-          onComplete={this.closeLogin.bind(this)}
           onCreateUser={this.createUser.bind(this)}
           onDeleteUser={this.deleteUser.bind(this)}
           onSelectUser={this.selectUser.bind(this)}
-          onSubmit={this.closeLogin.bind(this)}
+          onSubmit={this.showMenu.bind(this)}
         />
-      );
-      default: return (
+      ),
+      menu: () => (
         <Menu
           user={users.find((user) => user.id === currentUser)}
           puzzles={puzzles.filter((puzzle) => puzzle.userId === currentUser)}
           onSelectPuzzle={this.showPuzzle.bind(this)}
+          onChangeUser={this.showLogin.bind(this)}
         />
-      );
-    }
+      ),
+      puzzle: ({puzzleId}) => {
+        const puzzle = puzzles.find((puzzle) => puzzle.id === puzzleId);
+        return (
+          <Puzzle {...puzzle} {...getPuzzleData(puzzle.puzzleDataId)}
+            puzzleId={puzzle.id}
+            onBack={this.showMenu.bind(this)}
+            onNext={this.nextPuzzle.bind(this)}
+          />
+        );
+      },
+      endGame: () => (
+        <EndGame
+          puzzles={puzzles.filter((puzzle) => puzzle.userId === currentUser)}
+          onBack={this.showMenu.bind(this)}
+        />
+      )
+    };
+
+    return (<Router routes={routes} route={route}/>);
   }
+
+  // render() {
+  //   const {store} = this.props;
+  //   const {users, currentUser, puzzles} = store;
+  //   const {currentPuzzleId, showingSplash, showingLogin, showingEndGame} = this.state;
+  //   const currentPuzzle = currentPuzzleId ? puzzles.find((puzzle) => puzzle.id === currentPuzzleId) : null;
+  //
+  //   switch(true) {
+  //     case showingEndGame: return (
+  //       <EndGame
+  //         puzzles={puzzles.filter((puzzle) => puzzle.userId === currentUser)}
+  //         onBack={this.hideEndGame.bind(this)}
+  //       />
+  //     );
+  //     case !!currentPuzzle: return (
+  //       <Puzzle {...currentPuzzle} {...getPuzzleData(currentPuzzle.puzzleDataId)}
+  //         puzzleId={currentPuzzle.id}
+  //         onBack={this.hidePuzzle.bind(this)}
+  //         onNext={this.nextPuzzle.bind(this)}
+  //       />
+  //     );
+  //     case showingSplash: return (
+  //       <Splash
+  //         onComplete={this.closeSplash.bind(this)}
+  //       />
+  //     );
+  //     case showingLogin: return (
+  //       <Login
+  //         users={users}
+  //         currentUser={currentUser}
+  //         onComplete={this.closeLogin.bind(this)}
+  //         onCreateUser={this.createUser.bind(this)}
+  //         onDeleteUser={this.deleteUser.bind(this)}
+  //         onSelectUser={this.selectUser.bind(this)}
+  //         onSubmit={this.closeLogin.bind(this)}
+  //       />
+  //     );
+  //     default: return (
+  //       <Menu
+  //         user={users.find((user) => user.id === currentUser)}
+  //         puzzles={puzzles.filter((puzzle) => puzzle.userId === currentUser)}
+  //         onSelectPuzzle={this.showPuzzle.bind(this)}
+  //       />
+  //     );
+  //   }
+  // }
 }

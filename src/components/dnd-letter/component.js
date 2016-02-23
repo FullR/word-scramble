@@ -6,6 +6,16 @@ import Frame from "components/frame";
 import Letter from "components/letter";
 
 export default class DndLetter extends React.Component {
+  static propTypes = {
+    value: React.PropTypes.shape({
+      letter: React.PropTypes.string,
+      location: React.PropTypes.oneOf(["selected", "unselected"])
+    }),
+    onDrop: React.PropTypes.func,
+    letter: React.PropTypes.string,
+    size: React.PropTypes.string
+  };
+
   render() {
     const {value, onDrop, letter, className, size} = this.props;
     const cn = bembam("Dnd-letter", className);
