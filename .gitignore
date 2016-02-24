@@ -1,4 +1,5 @@
 node_modules
+desktop-builds
 dist
 builds
 .DS_Store

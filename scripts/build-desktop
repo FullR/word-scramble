@@ -1,0 +1,8 @@
+npm run compile
+mkdir -p .desktop-files
+cp -R dist/* .desktop-files
+cp main.js ./.desktop-files/index.js
+cp package.json ./.desktop-files
+mkdir -p desktop-builds
+electron-packager ./.desktop-files 'Word Scramble' --platform=all --arch=all --out=desktop-builds
+rm -rf ./.desktop-files
