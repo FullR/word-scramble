@@ -98,7 +98,7 @@ export default class Menu extends React.Component {
                 <PuzzleListItem
                   key={puzzle.id}
                   height={puzzleItemHeight}
-                  onClick={onSelectPuzzle.bind(null, puzzle.id)}
+                  onClick={puzzle.complete ? null : onSelectPuzzle.bind(null, puzzle.id)}
                 >
                   {1 + i + (page * pageLength)}. {word}
                 </PuzzleListItem>

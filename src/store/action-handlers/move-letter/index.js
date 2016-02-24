@@ -18,8 +18,10 @@ export default function moveLetter(state, {start, end, puzzleId}) {
 }
 
 function validateMovement(puzzle, source, target) {
+  // check location (must be unselected or selected)
   if(source.location !== "unselected" && source.location !== "selected") throw new Error(`Invalid move location ${source.location}`);
   if(target.location !== "unselected" && target.location !== "selected") throw new Error(`Invalid move location ${target.location}`);
+  // check for index out of bounds
   if(source.index < 0 || source.index >= puzzle[source.location].length) throw new Error(`Source index out of bounds: ${source.index}`);
   if(target.index < 0 || target.index >= puzzle[target.location].length) throw new Error(`Target index out of bounds: ${target.index}`);
 }

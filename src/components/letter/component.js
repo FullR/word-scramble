@@ -1,7 +1,7 @@
 import React from "react";
 import bembam from "bembam";
 const letters = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"];
-const sizes = ["small", "medium", "large"];
+const sizes = ["small", "large"];
 
 export default class Letter extends React.Component {
   static propTypes = {
@@ -10,7 +10,7 @@ export default class Letter extends React.Component {
   };
 
   static defaultProps = {
-    size: "medium"
+    size: "large"
   };
 
   render() {

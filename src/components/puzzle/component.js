@@ -1,6 +1,7 @@
 import React from "react";
 import {noop} from "lodash";
 import bembam from "bembam";
+import getEventKey from "util/get-event-key";
 import dndContext from "dnd-context";
 import store from "store";
 import actions from "store/actions";
@@ -34,6 +35,7 @@ export default class Puzzle extends React.Component {
   constructor(props) {
     super(props);
     this.state = {checkingAnswer: false};
+    this.onKeyPress = this.onKeyPress.bind(this);
   }
 
   componentDidMount() {
@@ -41,6 +43,27 @@ export default class Puzzle extends React.Component {
       type: actions.START_PUZZLE,
       puzzleId: this.props.puzzleId
     });
+
+    window.addEventListener("keydown", this.onKeyPress);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("keydown", this.onKeyPress);
+  }
+
+  onKeyPress(event) {
+    const code = getEventKey(event);
+    if(code !== 123) {
+      event.preventDefault();
+    }
+
+    const {unselected, selected} = this.props;
+    const c = String.fromCharCode(code).toLowerCase();
+    const unselectedIndex = unselected.findIndex((choice) => choice.letter === c);
+
+    if(unselectedIndex !== -1) {
+      this.autoMoveLetter({location: "unselected", index: unselectedIndex});
+    }
   }
 
   moveLetter(start, end) {
@@ -49,6 +72,19 @@ export default class Puzzle extends React.Component {
       type: actions.MOVE_LETTER,
       puzzleId: this.props.puzzleId
     });
+  }
+
+  autoMoveLetter(start) {
+    const {selected, unselected} = this.props;
+    const end = start.location === "selected" ? {
+      location: "unselected",
+      index: unselected.findIndex(({letter}) => !letter)
+    } : {
+      location: "selected",
+      index: selected.findIndex(({letter}) => !letter)
+    };
+
+    this.moveLetter(start, end);
   }
 
   showSentenceHint() {
@@ -90,14 +126,36 @@ export default class Puzzle extends React.Component {
     this.setState({checkingAnswer: true});
   }
 
+  hideCheckAnswerModal() {
+    this.setState({checkingAnswer: false});
+  }
+
+  showCorrectAnswer() {
+    store.dispatch({
+      type: actions.COMPLETE_PUZZLE,
+      puzzleId: this.props.puzzleId
+    });
+
+    this.setState({
+      checkingAnswer: false
+    });
+  }
+
   getLetterSize() {
     const {length} = this.props.unselected;
 
     switch(true) {
-      case length <= 5: return "large";
       case length >= 10: return "small";
-      default: return "medium";
+      default: return "large";
     }
+  }
+
+  getCorrectLetters() {
+    return this.props.word.split("").map((letter, i) => ({letter, id: i}));
+  }
+
+  getBlankLetters() {
+    return this.props.word.split("").map((_, i) => ({letter: null, id: i}));
   }
 
   render() {
@@ -106,6 +164,7 @@ export default class Puzzle extends React.Component {
       unselected,
       definition,
       sentence,
+      complete,
       showingSentenceHint,
       selectedHintIndex,
       unselectedHintIndex,
@@ -116,12 +175,18 @@ export default class Puzzle extends React.Component {
     const {checkingAnswer} = this.state;
     const letterSize = this.getLetterSize();
     const cn = bembam("Puzzle", className);
+    const topLetters = complete ? this.getCorrectLetters() : selected;
+    const bottomLetters = complete ? this.getBlankLetters() : unselected;
 
     return (
       <Screen {...this.props} className={cn}>
         <div className={cn.el("top")}>
+          <div className={cn.el("definition")}>
+            <strong>Definition:</strong><br/>
+            {definition}
+          </div>
           <div className={cn.el("selected")}>
-            {selected.map(({id, letter}, i) => {
+            {topLetters.map(({id, letter}, i) => {
               const value = {location: "selected", index: i};
               const onDrop = (start) => this.moveLetter(start, value);
               return (
@@ -131,14 +196,17 @@ export default class Puzzle extends React.Component {
                   value={value}
                   onDrop={onDrop}
                   glowing={selectedHintIndex === i}
+                  empty={!letter}
                   size={letterSize}
+                  disabled={complete}
+                  onDoubleClick={this.autoMoveLetter.bind(this, value)}
                 />
               );
             })}
           </div>
 
           <div className={cn.el("unselected")}>
-            {unselected.map(({id, letter}, i) => {
+            {bottomLetters.map(({id, letter}, i) => {
               const value = {location: "unselected", index: i};
               const onDrop = (start) => this.moveLetter(start, value);
               return (
@@ -148,32 +216,48 @@ export default class Puzzle extends React.Component {
                   value={value}
                   onDrop={onDrop}
                   glowing={unselectedHintIndex === i}
+                  empty={!letter}
                   size={letterSize}
+                  disabled={complete}
+                  onDoubleClick={this.autoMoveLetter.bind(this, value)}
                 />
               );
             })}
           </div>
 
-          <div>{definition}</div>
           <div className={cn.el("shuffle-button-container")}>
             <Button onClick={this.shuffleLetters.bind(this)}>Shuffle</Button>
           </div>
         </div>
 
         <div className={cn.el("bottom")}>
-          <Button onClick={this.showSentenceHint.bind(this)}>Sentence Hint</Button>
-          {showingSentenceHint ?
-            <div>{sentence}</div> :
-            null
-          }
-          <Button onClick={this.showLetterHint.bind(this)}>Letter Hint</Button>
-          <Button onClick={this.checkAnswer.bind(this)}>Check Answer</Button>
+          <div className={cn.el("hint-row")}>
+            <Button onClick={this.showLetterHint.bind(this)} className={cn.el("letter-hint-button")}>
+              Letter Hint
+            </Button>
+            <Button onClick={this.showSentenceHint.bind(this)} disabled={showingSentenceHint} className={cn.el("sentence-hint-button")}>
+              Sentence Hint
+            </Button>
+            <div className={cn.el("sentence-hint")}>
+              {showingSentenceHint ?
+                <div>{sentence}</div> :
+                null
+              }
+            </div>
+            <Button onClick={this.checkAnswer.bind(this)} className={cn.el("check-answer-button")}>Check Answer</Button>
+          </div>
+
           <Link className={cn.el("menu-link")} onClick={onBack}>Menu</Link>
-          <Arrow className={cn.el("skip-button")} onClick={onNext}>Skip</Arrow>
+          <Arrow className={cn.el("skip-button")} onClick={onNext}>{complete ? "Next" : "Skip"}</Arrow>
         </div>
 
         {checkingAnswer ?
-          <ShowAnswerModal/> :
+          <ShowAnswerModal
+            correct={this.isCorrect()}
+            onClose={this.hideCheckAnswerModal.bind(this)}
+            onSkip={onNext}
+            onShowCorrect={this.showCorrectAnswer.bind(this)}
+          /> :
           null
         }
       </Screen>

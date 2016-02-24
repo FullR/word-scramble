@@ -4,8 +4,10 @@ import Application from "components/application";
 import storage from "storage";
 import store from "store";
 import actions from "store/actions";
+
 require("style/normalize.scss");
 require("style/base.scss");
+
 const loadedState = storage.get("state");
 
 if(!!loadedState) {

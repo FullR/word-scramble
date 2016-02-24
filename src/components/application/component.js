@@ -63,7 +63,7 @@ export default class Application extends React.Component {
   }
 
   nextPuzzle() {
-    const {currentPuzzleId} = this.state;
+    const currentPuzzleId = this.state.route.options.puzzleId;
     const {store} = this.props;
     const {currentUser, puzzles} = store;
     const userPuzzles = puzzles.filter((puzzle) => puzzle.userId === currentUser);
@@ -90,6 +90,7 @@ export default class Application extends React.Component {
           onComplete={this.showLogin.bind(this)}
         />
       ),
+
       login: () => (
         <Login
           users={users}
@@ -100,6 +101,7 @@ export default class Application extends React.Component {
           onSubmit={this.showMenu.bind(this)}
         />
       ),
+
       menu: () => (
         <Menu
           user={users.find((user) => user.id === currentUser)}
@@ -108,16 +110,19 @@ export default class Application extends React.Component {
           onChangeUser={this.showLogin.bind(this)}
         />
       ),
+
       puzzle: ({puzzleId}) => {
         const puzzle = puzzles.find((puzzle) => puzzle.id === puzzleId);
         return (
           <Puzzle {...puzzle} {...getPuzzleData(puzzle.puzzleDataId)}
+            key={puzzle.id}
             puzzleId={puzzle.id}
             onBack={this.showMenu.bind(this)}
             onNext={this.nextPuzzle.bind(this)}
           />
         );
       },
+
       endGame: () => (
         <EndGame
           puzzles={puzzles.filter((puzzle) => puzzle.userId === currentUser)}
@@ -128,50 +133,4 @@ export default class Application extends React.Component {
 
     return (<Router routes={routes} route={route}/>);
   }
-
-  // render() {
-  //   const {store} = this.props;
-  //   const {users, currentUser, puzzles} = store;
-  //   const {currentPuzzleId, showingSplash, showingLogin, showingEndGame} = this.state;
-  //   const currentPuzzle = currentPuzzleId ? puzzles.find((puzzle) => puzzle.id === currentPuzzleId) : null;
-  //
-  //   switch(true) {
-  //     case showingEndGame: return (
-  //       <EndGame
-  //         puzzles={puzzles.filter((puzzle) => puzzle.userId === currentUser)}
-  //         onBack={this.hideEndGame.bind(this)}
-  //       />
-  //     );
-  //     case !!currentPuzzle: return (
-  //       <Puzzle {...currentPuzzle} {...getPuzzleData(currentPuzzle.puzzleDataId)}
-  //         puzzleId={currentPuzzle.id}
-  //         onBack={this.hidePuzzle.bind(this)}
-  //         onNext={this.nextPuzzle.bind(this)}
-  //       />
-  //     );
-  //     case showingSplash: return (
-  //       <Splash
-  //         onComplete={this.closeSplash.bind(this)}
-  //       />
-  //     );
-  //     case showingLogin: return (
-  //       <Login
-  //         users={users}
-  //         currentUser={currentUser}
-  //         onComplete={this.closeLogin.bind(this)}
-  //         onCreateUser={this.createUser.bind(this)}
-  //         onDeleteUser={this.deleteUser.bind(this)}
-  //         onSelectUser={this.selectUser.bind(this)}
-  //         onSubmit={this.closeLogin.bind(this)}
-  //       />
-  //     );
-  //     default: return (
-  //       <Menu
-  //         user={users.find((user) => user.id === currentUser)}
-  //         puzzles={puzzles.filter((puzzle) => puzzle.userId === currentUser)}
-  //         onSelectPuzzle={this.showPuzzle.bind(this)}
-  //       />
-  //     );
-  //   }
-  // }
 }

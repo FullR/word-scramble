@@ -7,7 +7,9 @@ export default function completePuzzle(state, {puzzleId}) {
       (puzzle) => puzzle.id === puzzleId,
       (puzzle) => ({
         ...puzzle,
-        complete: true
+        complete: true,
+        selectedHintIndex: null,
+        unselectedHintIndex: null
       })
     )
   };

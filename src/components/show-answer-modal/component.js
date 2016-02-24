@@ -34,14 +34,13 @@ export default class ShowAnswerModal extends React.Component {
         }
 
         {correct ?
+          <Button onClick={onSkip} className={cn.el("next-button")}>Next Puzzle</Button> :
           <div className={cn.el("buttons")}>
             <Button onClick={onSkip}>Skip</Button>
             <Button onClick={onShowCorrect}>Show Correct<br/>Answer</Button>
             <Button onClick={onClose}>Close</Button>
-          </div> :
-          <Button onClick={onSkip} className={cn.el("next-button")}>Next Puzzle</Button>
+          </div>
         }
-
       </Modal>
     );
   }

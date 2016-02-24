@@ -13,19 +13,19 @@ $glow-color: #FFA500;
     border: 2px solid rgb(0, 0, 221);
   }
 
-  &--empty {
-    border: 2px solid #DDD;
-    cursor: default;
-    &:hover {
-      border: 2px solid #DDD;
-    }
-  }
-
   &--disabled {
     background: #EEE;
     cursor: default;
     &:hover {
       border: 2px solid #444;
+    }
+  }
+
+  &--empty {
+    border: 2px solid #DDD;
+    cursor: default;
+    &:hover {
+      border: 2px solid #DDD;
     }
   }
 
