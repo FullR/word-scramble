@@ -4,6 +4,11 @@ Installs dependencies and initializes Cordova project.
 npm install
 ```
 
+## Run Tests
+```bash
+npm run test
+```
+
 ## Compile
 Builds files in `src` and places the compiled project into `www`.
 ```bash
