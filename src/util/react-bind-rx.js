@@ -3,7 +3,6 @@ import React from "react";
 /*
   Curried function for creating higher components that depend asynchronously on an Rx.Observable
 */
-
 const reactBindRx = (renderFn) => // Handles JSX, passing props and observable state to wrapped component
   (observable) => // The observable to subscribe to
   (Component) => // The component to wrap
@@ -14,6 +13,7 @@ const reactBindRx = (renderFn) => // Handles JSX, passing props and observable s
           error: null,
           complete: false
         };
+        // handle Rx.BehaviorSubject
         if(typeof observable.getValue === "function") {
           // leave value undefined, so wrapped component's defaultProps work as expected
           state.value = observable.getValue();

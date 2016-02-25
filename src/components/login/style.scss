@@ -1,25 +1,60 @@
 .Login {
+  display: flex;
+  flex-direction: column;
   &__header {
-    position: absolute;
-    left: 0;
+    position: relative;
+    flex: 0 1 100px;
     width: 100%;
-    top: 50px;
     text-align: center;
     font-size: 25px;
     font-weight: 800;
   }
 
-  &__user-list {
+  &__header-text {
     position: absolute;
-    left: 50%;
     top: 50%;
+    left: 50%;
     transform: translate(-50%, -50%);
   }
 
+  &__user-list {
+    display: flex;
+    flex-direction: row;
+    height: 0;
+    flex: 1 1 auto;
+    overflow: auto;
+    min-height: 100px;
+
+    .User-list {
+      flex: 0 1 600px;
+      margin: 0 auto;
+    }
+  }
+
+  &__form-container {
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    margin-bottom: 10px;
+
+    .User-list-form {
+      flex: 0 1 600px;
+      margin: 0 auto;
+    }
+  }
+
   &__login-button {
-    position: absolute;
-    right: 50px;
-    bottom: 50px;
     cursor: pointer;
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translate(0, -50%);
+  }
+
+  &__footer {
+    position: relative;
+    flex: 0 1 100px;
+    width: 100%;
+    text-align: right;
   }
 }

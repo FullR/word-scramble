@@ -2,10 +2,15 @@
   "name": "word-jumble",
   "version": "0.0.10",
   "scripts": {
-    "clean": "mkdir -p builds && mkdir -p dist && rm -rf builds/* && rm -rf dist/*",
+    "postinstall": "cordova prepare",
+    "clean": "mkdir -p builds && mkdir -p www && rm -rf builds/* && rm -rf www/*",
     "compile": "scripts/compile",
     "start": "scripts/dev-server",
-    "build:desktop": "scripts/build-desktop",
+    "start:android": "npm run compile && cordova run android",
+    "build": "cross-env NODE_ENV=production npm run compile && scripts/build-desktop && scripts/build-web && scripts/build-android",
+    "build:desktop": "npm run compile && scripts/build-desktop",
+    "build:web": "npm run compile && scripts/build-web",
+    "build:android": "npm run compile && scripts/build-android",
     "upload": "scripts/upload",
     "release": "npm run compile && npm run upload",
     "test": "env NODE_PATH=$NODE_PATH:$PWD/src mocha --recursive --require babel-polyfill --compilers js:babel-core/register 'src/**/*.test.js'"
@@ -23,7 +28,7 @@
     "rx": "^4.0.7"
   },
   "devDependencies": {
-    "autoprefixer-loader": "^3.1.0",
+    "autoprefixer": "^6.3.3",
     "babel-core": "^6.5.1",
     "babel-jest": "^6.0.1",
     "babel-loader": "^6.2.2",
@@ -34,6 +39,7 @@
     "babel-preset-stage-0": "^6.5.0",
     "babel-register": "^6.5.1",
     "chai": "^3.5.0",
+    "cross-env": "^1.0.7",
     "css-loader": "^0.19.0",
     "electron-packager": "^5.2.1",
     "electron-prebuilt": "^0.36.8",
@@ -48,6 +54,7 @@
     "mocha-jsdom": "^1.0.0",
     "node-sass": "^3.3.3",
     "pace": "0.0.4",
+    "postcss-loader": "^0.8.1",
     "progress": "^1.1.8",
     "react-addons-test-utils": "^0.14.7",
     "sass-loader": "^2.0.1",

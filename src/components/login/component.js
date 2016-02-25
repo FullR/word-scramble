@@ -106,13 +106,17 @@ export default class Login extends React.Component {
 
     return (
       <Screen {...this.props} className={cn} onSubmit={null}>
-        <div className={cn.el("header")}>Create or Select a user</div>
-        <div className={cn.el("user-list")}>
+        <div className={cn.el("header")}>
+          <div className={cn.el("header-text")}>Create or Select a user</div>
+        </div>
+        <div className={cn.el("form-container")}>
           <UserListForm
             value={username}
             onChange={this.updateUsername.bind(this)}
             onSubmit={this.createUser.bind(this)}
           />
+        </div>
+        <div className={cn.el("user-list")}>
           <UserList>
             {users.map((user) =>
               <UserListItem
@@ -126,7 +130,9 @@ export default class Login extends React.Component {
             )}
           </UserList>
         </div>
-        <Button className={cn.el("login-button")} onClick={onSubmit} disabled={!currentUser}>Login</Button>
+        <div className={cn.el("footer")}>
+          <Button className={cn.el("login-button")} onClick={onSubmit} disabled={!currentUser}>Login</Button>
+        </div>
         {this.renderModals()}
       </Screen>
     );

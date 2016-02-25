@@ -1,8 +1,8 @@
-npm run compile
-mkdir -p .desktop-files
-cp -R dist/* .desktop-files
-cp main.js ./.desktop-files/index.js
-cp package.json ./.desktop-files
-mkdir -p desktop-builds
-electron-packager ./.desktop-files 'Word Scramble' --platform=all --arch=all --out=desktop-builds
-rm -rf ./.desktop-files
+mkdir -p .temp-desktop-files
+mkdir -p builds
+rm -rf builds/*
+cp -R www/* ./.temp-desktop-files
+cp electron-main.js ./.temp-desktop-files/index.js
+cp package.json ./.temp-desktop-files
+electron-packager ./.temp-desktop-files 'Word Scramble' --platform=all --arch=all --out=builds
+rm -rf ./.temp-desktop-files

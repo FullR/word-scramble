@@ -1,10 +1,9 @@
 node_modules
-desktop-builds
-dist
+platforms
+plugins
+www
 builds
 .DS_Store
 audio
 npm-debug.log
-documents
 .~*
-

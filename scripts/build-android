@@ -1,0 +1,5 @@
+#!/bin/bash
+
+cordova build --release android
+mkdir -p builds/Word-Scramble-android
+cp platforms/android/build/outputs/apk/android-release-unsigned.apk builds/Word-Scramble-android/Word-Scramble-unsigned.apk
